@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="id" class="h-full bg-slate-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Spreadsheet Pelaporan PPP & KPI Weekly Meeting - ENFORUN 2026</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- SheetJS CDN for Excel Export -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            900: '#14532d',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Scrollbar for Spreadsheet Tables */
+        .custom-scrollbar::-webkit-scrollbar {
+            height: 8px;
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* ===== POLISH TAMPILAN ===== */
+        html body { font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif; font-feature-settings: 'cv11', 'ss03'; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+        h1, h2, h3, h4 { letter-spacing: -0.01em; }
+        table { font-variant-numeric: tabular-nums; }
+        html body select {
+            -webkit-appearance: none; appearance: none; cursor: pointer;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+            background-repeat: no-repeat; background-position: right .6rem center; background-size: 1em; padding-right: 2rem !important;
+        }
+        .resp-table th, .resp-table td { border-right-width: 0 !important; }
+        .resp-table thead th { background: #f8fafc !important; color: #64748b; font-size: 11px; font-weight: 600; letter-spacing: .06em; padding-top: .85rem; padding-bottom: .85rem; }
+        #pppTable td { vertical-align: top; }
+        #pppTable tbody tr:nth-child(even) { background: #fafbfc; }
+        .tab-btn { transition: color .15s, border-color .15s, background-color .15s; }
+        .tab-btn:hover { background: rgba(255,255,255,.04); }
+        input::placeholder, textarea::placeholder { color: #94a3b8; }
+        button { transition: background-color .15s, color .15s, box-shadow .15s; }
+        /* ===== RESPONSIVE MOBILE ===== */
+        @media (max-width: 767px) {
+            html, body { overflow-x: hidden; }
+            input, select, textarea { font-size: 16px !important; }
+            .filter-bar > div, .filter-bar select { width: 100%; min-width: 0 !important; }
+            #kpi-filter-divisi { width: 100%; }
+            [class*="min-h-["] { min-height: 0 !important; }
+            .resp-table, .resp-table tbody { display: block; width: 100%; }
+            .resp-table thead { display: none; }
+            .resp-table tr { display: block; margin: 0 0 12px; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; background: #fff; }
+            .resp-table td { display: block; border: 0 !important; border-bottom: 1px solid #f1f5f9 !important; padding: 8px 12px !important; text-align: left !important; word-break: break-word; }
+            .resp-table td:last-child { border-bottom: 0 !important; }
+            .resp-table td[data-label]::before { content: attr(data-label); display: block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: #94a3b8; margin-bottom: 3px; }
+            .resp-table input, .resp-table select { width: 100%; }
+            .resp-table td .flex { justify-content: flex-start; }
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col font-sans text-slate-800 antialiased selection:bg-brand-500 selection:text-white">
+
+    <!-- TOP HEADER NAVBAR -->
+    <header class="bg-gradient-to-r from-slate-900 via-slate-900 to-slate-800 text-white border-b border-slate-800 md:sticky md:top-0 z-30 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between gap-3 py-3 md:py-0 md:h-16">
+                <!-- Logo & Event Info -->
+                <div class="flex items-center space-x-3 min-w-0">
+                    <div class="shrink-0 bg-brand-500 text-slate-900 p-2 rounded-lg font-bold flex items-center justify-center shadow">
+                        <i data-lucide="table" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-sm sm:text-lg leading-tight flex flex-wrap items-center gap-x-2 gap-y-1">
+                            Master Spreadsheet Pelaporan PPP & KPI
+                            <span class="bg-brand-500/20 text-brand-400 text-xs px-2 py-0.5 rounded-full border border-brand-500/30">ENFORUN 2026</span>
+                        </h1>
+                        <p class="hidden sm:block text-xs text-slate-400">Sistem Monitoring Weekly Meeting, Matriks RAG & SOP Kepanitiaan</p>
+                    </div>
+                </div>
+
+                <!-- Action Controls -->
+                <div class="shrink-0 flex items-center space-x-2 sm:space-x-3">
+                    <button onclick="openNewReportModal()" class="inline-flex items-center gap-1.5 bg-brand-600 hover:bg-brand-500 text-white text-xs sm:text-sm font-medium px-3 py-2 rounded-lg transition-all shadow-sm">
+                        <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                        <span class="hidden sm:inline">Input Laporan PPP</span>
+                    </button>
+                    <button onclick="exportToExcel()" class="inline-flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs sm:text-sm font-medium px-3 py-2 rounded-lg border border-slate-700 transition-all">
+                        <i data-lucide="download" class="w-4 h-4 text-emerald-400"></i>
+                        <span class="hidden sm:inline">Export Excel</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB NAVIGATION -->
+        <div class="bg-slate-950 border-t border-slate-800/80 px-4 sm:px-6 lg:px-8">
+            <div class="max-w-7xl mx-auto flex space-x-1 sm:space-x-4 overflow-x-auto custom-scrollbar">
+                <button onclick="switchTab('spreadsheet')" id="tab-spreadsheet" class="tab-btn px-4 py-3 text-xs sm:text-sm font-medium border-b-2 border-brand-500 text-brand-400 flex items-center gap-2 whitespace-nowrap">
+                    <i data-lucide="sheet" class="w-4 h-4"></i>
+                    Spreadsheet Laporan PPP
+                </button>
+                <button onclick="switchTab('dashboard')" id="tab-dashboard" class="tab-btn px-4 py-3 text-xs sm:text-sm font-medium border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2 whitespace-nowrap">
+                    <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+                    Dashboard RAG & Executive Summary
+                </button>
+                <button onclick="switchTab('kpi')" id="tab-kpi" class="tab-btn px-4 py-3 text-xs sm:text-sm font-medium border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2 whitespace-nowrap">
+                    <i data-lucide="target" class="w-4 h-4"></i>
+                    Matriks KPI Divisi
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
+
+        <!-- TAB 1: SPREADSHEET INTERAKTIF LAPORAN PPP -->
+        <section id="sec-spreadsheet" class="tab-content space-y-4">
+            
+            <!-- Filters & Controls Bar -->
+            <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col md:flex-row gap-4 items-center justify-between">
+                <div class="filter-bar flex flex-wrap items-center gap-3 w-full md:w-auto">
+                    <!-- Search Input -->
+                    <div class="relative min-w-[220px] flex-1 md:flex-none">
+                        <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="text" id="filter-search" oninput="renderTable()" placeholder="Cari divisi, PIC, atau kata kunci..." class="w-full pl-9 pr-3 py-2 text-sm bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500/40 focus:border-brand-500 transition">
+                    </div>
+
+                    <!-- Filter Divisi -->
+                    <select id="filter-divisi" onchange="renderTable()" class="py-2 px-3 text-sm bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500/40 focus:border-brand-500 transition"></select>
+
+                    <!-- Filter Minggu Ke -->
+                    <select id="filter-week" onchange="renderTable()" class="py-2 px-3 text-sm bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500/40 focus:border-brand-500 transition"></select>
+
+                    <!-- Filter Status RAG -->
+                    <select id="filter-rag" onchange="renderTable()" class="py-2 px-3 text-sm bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500/40 focus:border-brand-500 transition">
+                        <option value="ALL">Semua Status RAG</option>
+                        <option value="GREEN">GREEN (On Track)</option>
+                        <option value="AMBER">AMBER (At Risk)</option>
+                        <option value="RED">RED (Critical)</option>
+                    </select>
+                </div>
+
+                <!-- Info Record Count -->
+                <div class="text-xs text-slate-500 flex items-center gap-2 self-end md:self-center">
+                    <span>Menampilkan <strong id="record-count" class="text-slate-800">0</strong> data laporan</span>
+                </div>
+            </div>
+
+            <!-- Spreadsheet Data Table Container -->
+            <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+                <div class="overflow-x-auto custom-scrollbar min-h-[400px]">
+                    <table class="w-full text-left text-xs sm:text-sm border-collapse resp-table" id="pppTable">
+                        <thead class="bg-slate-100 text-slate-700 uppercase font-semibold text-[11px] tracking-wider border-b border-slate-200 sticky top-0 z-10">
+                            <tr>
+                                <th class="p-3.5 w-12 text-center border-r border-slate-200">No</th>
+                                <th class="p-3.5 min-w-[150px] border-r border-slate-200">Tanggal</th>
+                                <th class="p-3.5 min-w-[180px] border-r border-slate-200">Divisi</th>
+                                <th class="p-3.5 min-w-[150px] border-r border-slate-200">Koordinator / PIC</th>
+                                <th class="p-3.5 w-32 border-r border-slate-200 text-center">Status RAG</th>
+                                <th class="p-3.5 w-28 border-r border-slate-200 text-center">KPI %</th>
+                                <th class="p-3.5 min-w-[260px] border-r border-slate-200">Progress (Selesai 100%)</th>
+                                <th class="p-3.5 min-w-[260px] border-r border-slate-200">Plans (Target Minggu Depan)</th>
+                                <th class="p-3.5 min-w-[260px] border-r border-slate-200">Problems & Escalation</th>
+                                <th class="p-3.5 w-28 text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pppTableBody" class="divide-y divide-slate-200 text-slate-700">
+                            <!-- Rows rendered via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: DASHBOARD EXECUTIVE SUMMARY & RAG METRICS -->
+        <section id="sec-dashboard" class="tab-content hidden space-y-6">
+            
+            <!-- Overall Progress Summary Card -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center space-x-4">
+                    <div class="p-3 bg-brand-100 text-brand-600 rounded-xl">
+                        <i data-lucide="activity" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-500 font-medium">Progress Global Event</p>
+                        <h3 class="text-2xl font-bold text-slate-900" id="dash-global-progress">82.4%</h3>
+                        <p class="text-[11px] text-emerald-600 font-medium flex items-center gap-1 mt-0.5">
+                            <i data-lucide="trending-up" class="w-3 h-3"></i> Sesuai Master Timeline
+                        </p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center space-x-4">
+                    <div class="p-3 bg-emerald-100 text-emerald-600 rounded-xl">
+                        <i data-lucide="check-circle-2" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-500 font-medium">Divisi Status GREEN</p>
+                        <h3 class="text-2xl font-bold text-emerald-700" id="dash-green-count">7 Divisi</h3>
+                        <p class="text-[11px] text-slate-500">Kinerja On Track (>95%)</p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center space-x-4">
+                    <div class="p-3 bg-amber-100 text-amber-600 rounded-xl">
+                        <i data-lucide="alert-triangle" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-500 font-medium">Divisi Status AMBER</p>
+                        <h3 class="text-2xl font-bold text-amber-700" id="dash-amber-count">2 Divisi</h3>
+                        <p class="text-[11px] text-slate-500">Perlu Penyesuaian Internal</p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center space-x-4">
+                    <div class="p-3 bg-rose-100 text-rose-600 rounded-xl">
+                        <i data-lucide="alert-octagon" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-500 font-medium">Divisi Status RED</p>
+                        <h3 class="text-2xl font-bold text-rose-700" id="dash-red-count">0 Divisi</h3>
+                        <p class="text-[11px] text-slate-500">Membutuhkan Intervensi PM</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Division Status Grid -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                    <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
+                        <i data-lucide="bar-chart-3" class="w-5 h-5 text-brand-600"></i>
+                        Status RAG & Capaian KPI Per Divisi
+                    </h3>
+                    <span class="text-xs text-slate-500">Update Terakhir: 28 Okt 2026</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="divisionCardsContainer">
+                    <!-- Cards injected via JS -->
+                </div>
+            </div>
+
+            <!-- Escalation & Attention Log -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
+                <h3 class="font-bold text-slate-800 text-base flex items-center gap-2 text-amber-700">
+                    <i data-lucide="shield-alert" class="w-5 h-5"></i>
+                    Matriks Isu Eskalasi Lintas Divisi (Butuh Keputusan PM / Pleno)
+                </h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs sm:text-sm resp-table">
+                        <thead class="bg-slate-50 text-slate-600 uppercase text-[11px] font-semibold border-b">
+                            <tr>
+                                <th class="p-3">Divisi Pelapor</th>
+                                <th class="p-3">Divisi Terkait</th>
+                                <th class="p-3">Deskripsi Isu & Bottleneck</th>
+                                <th class="p-3">Dampak Operasional</th>
+                                <th class="p-3">Rekomendasi Solusi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200" id="escalationTableBody">
+                            <!-- Injected via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: MATRIKS KPI DIVISI -->
+        <section id="sec-kpi" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
+                            <i data-lucide="target" class="w-5 h-5 text-brand-600"></i>
+                            Matriks Indikator Kinerja Utama (KPI) Mingguan Kepanitiaan
+                        </h3>
+                        <p class="text-xs text-slate-500">Input target &amp; realisasi KPI untuk seluruh 22 divisi (tersimpan otomatis di browser)</p>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap items-center justify-between gap-3 bg-slate-50 border border-slate-200 rounded-lg p-3">
+                    <div class="flex items-center gap-3 flex-wrap">
+                        <select id="kpi-filter-divisi" onchange="renderKPI()" class="py-2 px-3 text-sm bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500/40 focus:border-brand-500 transition"></select>
+                        <span class="text-xs text-slate-500">Total <strong id="kpi-total" class="text-slate-800">0</strong> indikator</span>
+                    </div>
+                    <button onclick="resetKpi()" class="inline-flex items-center gap-1.5 text-xs font-medium text-rose-600 hover:text-rose-700 px-3 py-1.5 border border-rose-200 rounded-lg bg-white">
+                        <i data-lucide="eraser" class="w-4 h-4"></i> Kosongkan Semua
+                    </button>
+                </div>
+
+                <div class="space-y-6" id="kpiCategoryList">
+                    <!-- Injected via JS -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- MODAL: ADD / EDIT REPORT -->
+    <div id="modalReport" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-start sm:items-center justify-center hidden p-4 overflow-y-auto">
+        <div class="bg-white rounded-2xl max-w-2xl w-full shadow-xl border border-slate-200 overflow-hidden my-2 sm:my-8">
+            <div class="bg-slate-900 text-white p-4 sm:p-5 flex items-center justify-between">
+                <h3 class="font-bold text-base flex items-center gap-2" id="modalReportTitle">
+                    <i data-lucide="edit-3" class="w-5 h-5 text-brand-400"></i>
+                    Input Laporan PPP Mingguan
+                </h3>
+                <button onclick="closeReportModal()" class="text-slate-400 hover:text-white p-1">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <form id="formReport" onsubmit="saveReport(event)" class="p-4 sm:p-6 space-y-4 text-xs sm:text-sm">
+                <input type="hidden" id="edit-id" value="">
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1.5">Tanggal</label>
+                        <select id="inp-week" required class="w-full px-3 py-2 text-sm bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500/40 focus:border-brand-500 transition"></select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1.5">Divisi Utama</label>
+                        <select id="inp-divisi" required class="w-full px-3 py-2 text-sm bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500/40 focus:border-brand-500 transition"></select>
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <label class="block text-xs font-semibold text-slate-600 mb-1.5">Nama Koordinator / PIC</label>
+                        <input type="text" id="inp-pic" required placeholder="Contoh: Budi Santoso" class="w-full px-3 py-2 text-sm bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500/40 focus:border-brand-500 transition">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1.5">Status RAG</label>
+                        <select id="inp-rag" required onchange="colorRagSelect()" class="w-full px-3 py-2 text-sm bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500/40 focus:border-brand-500 transition">
+                            <option value="GREEN" style="background:#dcfce7;color:#166534;font-weight:600;">GREEN (KPI &gt;95%, Sesuai Jadwal)</option>
+                            <option value="AMBER" style="background:#fef3c7;color:#92400e;font-weight:600;">AMBER (KPI 75-94%, Risiko Ringan)</option>
+                            <option value="RED" style="background:#ffe4e6;color:#9f1239;font-weight:600;">RED (KPI &lt;75%, Ada Masalah)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1.5">Ketercapaian KPI (%)</label>
+                        <input type="number" id="inp-kpi" required min="0" max="100" value="85" class="w-full px-3 py-2 text-sm bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500/40 focus:border-brand-500 transition">
+                    </div>
+                </div>
+
+                <div class="pt-3 border-t border-slate-100"><p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Isi Laporan (3P)</p></div>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1.5">P - PROGRESS (Capaian Selesai 100% Minggu Ini + Bukti Output)</label>
+                        <textarea id="inp-progress" rows="3" required placeholder="• Capaian 1: [Deskripsi] (Bukti: Link/Dokumen)&#10;• Capaian 2: [Deskripsi]" class="w-full px-3 py-2.5 text-[13px] leading-relaxed bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500/40 focus:border-brand-500 transition"></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1.5">P - PLANS (Rencana Kerja Minggu Depan + Target Date + PIC)</label>
+                        <textarea id="inp-plans" rows="3" required placeholder="• Target 1: [Deskripsi] | PIC: [Nama] | Deadline: [Hari, Tgl]&#10;• Target 2: [Deskripsi] | PIC: [Nama] | Deadline: [Hari, Tgl]" class="w-full px-3 py-2.5 text-[13px] leading-relaxed bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500/40 focus:border-brand-500 transition"></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1.5">P - PROBLEMS (Kendala, Dampak, & Usulan Solusi / Eskalasi)</label>
+                        <textarea id="inp-problems" rows="3" required placeholder="• Isu 1: [Deskripsi Kendala]&#10;  ├ Dampak: [Efek Operasional]&#10;  └ Solusi/Bantuan: [Usulan Solusi ke PM/Pleno]" class="w-full px-3 py-2.5 text-[13px] leading-relaxed bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500/40 focus:border-brand-500 transition"></textarea>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-end space-x-3 pt-4 border-t border-slate-200">
+                    <button type="button" onclick="closeReportModal()" class="px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-100 font-medium">Batal</button>
+                    <button type="submit" class="px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-lg font-medium shadow-sm">Simpan Laporan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: PREVIEW & COPY FORMATTED TEXT (FOR WA / DOCS) -->
+    <div id="modalExportText" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-2xl max-w-xl w-full shadow-xl border border-slate-200 overflow-hidden">
+            <div class="bg-slate-900 text-white p-4 flex items-center justify-between">
+                <h3 class="font-bold text-sm flex items-center gap-2">
+                    <i data-lucide="copy" class="w-4 h-4 text-brand-400"></i>
+                    Format Laporan PPP (Siap Copy ke WA / Pleno)
+                </h3>
+                <button onclick="closeExportTextModal()" class="text-slate-400 hover:text-white p-1">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+            <div class="p-4 space-y-3">
+                <p class="text-xs text-slate-500">Salin teks terformat di bawah ini untuk dikirimkan ke grup WhatsApp Pleno atau Notulensi Rapat:</p>
+                <textarea id="formattedTextContent" readonly rows="12" class="w-full p-3 bg-slate-900 text-emerald-400 font-mono text-xs rounded-xl focus:outline-none border border-slate-700 leading-relaxed custom-scrollbar"></textarea>
+                <div class="flex items-center justify-end space-x-2 pt-2">
+                    <button onclick="closeExportTextModal()" class="px-3 py-1.5 border border-slate-300 text-xs rounded-lg text-slate-600 hover:bg-slate-100">Tutup</button>
+                    <button onclick="copyFormattedText()" class="px-4 py-1.5 bg-brand-600 hover:bg-brand-500 text-white text-xs rounded-lg font-medium inline-flex items-center gap-1.5 shadow-sm">
+                        <i data-lucide="check" class="w-3.5 h-3.5"></i> Salin Teks
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT DATA & LOGIC -->
+    <script>
+        // MASTER INITIAL MOCK DATA
+        let pppData = [
+            {
+                id: 1,
+                week: "2026-10-28",
+                divisi: "Acara Fun Run",
+                pic: "Budi Santoso & Andi Pratama",
+                rag: "AMBER",
+                kpi: 78,
+                progress: "• Measurement ulang rute 5K presisi menggunakan Jones Counter selesai 100%.\n• Pemetaan 2 titik Water Station (KM 2.5 & Finish) terkunci.\n• Transfer Materi #1: Peta Rute Resmi ke Divisi Keamanan & Medis.",
+                plans: "• Finalisasi alokasi 40 ploting titik marshal di persimpangan rute | PIC: Andi Pratama | Target: 17 Nov\n• Penyerahan list kebutuhan logistik rute ke Divisi Perlengkapan | PIC: Budi Santoso | Target: 20 Nov",
+                problems: "• Isu: Kuota relawan marshal dari HR kurang 15 orang.\n  ├ Dampak: Pos persimpangan rawan menerobos kendaraan warga.\n  └ Rekomendasi: Buka pendaftaran gelombang 2 atau alokasi staf Danus."
+            },
+            {
+                id: 2,
+                week: "2026-10-28",
+                divisi: "Acara Seremoni",
+                pic: "Siti Rahma & Rizky",
+                rag: "GREEN",
+                kpi: 96,
+                progress: "• Finalisasi Rundown detail Fun Run & Script MC Formal/Semi-formal 100%.\n• Transfer Materi #1 ke Humas/LO (Daftar VIP & Seating Arrangement).\n• Rutinitas latihan Sub-Divisi Performance (Drama/Dance) berjalan 3x seminggu.",
+                plans: "• Penyerahan ToR Properti Panggung & Kostum ke Kreatif & Dekorasi | Target: 17 Nov\n• Menyusun alur panggung penyerahan plakat/sertifikat | Target: 17 Nov",
+                problems: "• Isu: Penyerahan Juknis Ringkas Peserta ke Marketing agak terbelakang.\n  ├ Dampak: Info Web Tiket butuh kejelasan aturan lomba.\n  └ Solusi: Draf Juknis Ringkas diselesaikan H-2 sebelum rapat berikutnya."
+            },
+            {
+                id: 3,
+                week: "2026-10-28",
+                divisi: "Keamanan",
+                pic: "Kombes Hendra & Dr. Aris",
+                rag: "GREEN",
+                kpi: 98,
+                progress: "• Penerimaan Peta Rute dari Divisi Fun Run selesai di-review.\n• Surat permohonan bantuan pengamanan resmi ke Polsek & Dishub terkirim.\n• MoU kesiapan IGD 24 Jam dengan RS Rujukan terkunci.",
+                plans: "• Pemetaan 3 Ring Keamanan & plotting 25 personel polisi/Satpol PP | Target: 24 Nov\n• Gladi simulasi jalur evakuasi darurat (Green Lane) | Target: 01 Des",
+                problems: "• Isu: Potensi titik kemacetan di Persimpangan Pasar Minggu.\n  ├ Dampak: Ambulans terhambat jika tidak ada rekayasa lalu lintas.\n  └ Solusi: Penempatan 2 personel Polantas khusus di titik persimpangan tersebut."
+            },
+            {
+                id: 4,
+                week: "2026-10-28",
+                divisi: "Teknis & Venue Manajemen",
+                pic: "Agus Pratama",
+                rag: "GREEN",
+                kpi: 92,
+                progress: "• Penandatanganan kontrak sewa venue Lapangan Utama tuntas 100%.\n• Lay-out 3D panggung utama & titik booth tenant disetujui PM.\n• Perhitungan total daya genset cadangan (2x 100 KVA) selesai.",
+                plans: "• Menerima Technical Rider panggung dari Divisi Acara | Target: 24 Nov\n• Inspeksi kelayakan instalasi listrik & jalur kabel tanah | Target: 27 Nov",
+                problems: "• Isu: Vendor backdrop memerlukan sampel warna cetak lebih awal.\n  ├ Dampak: Risiko warna cetak tidak sesuai brand guideline.\n  └ Solusi: Koordinasi dengan Divisi Kreatif untuk color proofing H-3 pasca rapat berikutnya."
+            },
+            {
+                id: 5,
+                week: "2026-10-28",
+                divisi: "Marketing",
+                pic: "Dian Sastro & Kevin",
+                rag: "AMBER",
+                kpi: 82,
+                progress: "• Penjualan Tiket Early Bird mencapai 85% dari kuota (850/1000 tiket).\n• Kampanye Meta Ads berjalan dengan ROAS 3.8x.\n• Integrasi Payment Gateway QRIS di website lancar tanpa crash.",
+                plans: "• Membuka gelombang Tiket Normal & Paket Komunitas | Target: 15 Nov\n• Rilisan Press Release Pra-Event ke 15 portal berita lokal | Target: 20 Nov",
+                problems: "• Isu: Calon pendaftar menanyakan kejelasan size chart jersey di DM.\n  ├ Dampak: Calon peserta menunda pembayaran di halaman checkout.\n  └ Solusi: Rilis grafis Size Chart Jersey resmi di Instagram Feeds dalam 1x24 jam."
+            }
+        ];
+
+        // DAFTAR 22 DIVISI
+        const DIVISIONS = ["Acara Seremoni","Acara Fun Run","Acara Performance","Kreatif","Media Publikasi","Media Dokumentasi","Performer","Logistik","Teknis & Venue Manajemen","Dekorasi","Fundraising Dana Usaha","Fundraising Merchandise","Marketing","Kesekretariatan","Sponsorship","Humas LO","Ticketing","Medis","Tenant","Perlengkapan","Keamanan","Konsumsi"];
+
+        // DAFTAR HARI: 1 Okt 2026 s.d. 31 Jan 2027 (setiap hari, tanpa terlewat)
+        const BULAN = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+        const HARI = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+        function pad2(n) { return String(n).padStart(2, '0'); }
+        function buildDays() {
+            const days = [];
+            const end = new Date(2027, 0, 31);
+            let d = new Date(2026, 9, 1);
+            while (d <= end) {
+                days.push({
+                    key: `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`,
+                    label: `${HARI[d.getDay()]}, ${pad2(d.getDate())} ${BULAN[d.getMonth()]} ${d.getFullYear()}`
+                });
+                d = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1);
+            }
+            return days;
+        }
+        const WEEKS = buildDays();
+        function dayLabel(key) {
+            const w = WEEKS.find(x => x.key === key);
+            return w ? w.label : key;
+        }
+        function defaultDay() {
+            const t = new Date();
+            const key = `${t.getFullYear()}-${pad2(t.getMonth() + 1)}-${pad2(t.getDate())}`;
+            return WEEKS.some(w => w.key === key) ? key : WEEKS[0].key;
+        }
+
+        // MASTER KPI DATA (bisa diinput, tersimpan di browser)
+        const KPI_KEY = 'enforun2026_kpi_v1';
+        function defaultKpi() {
+            const o = {};
+            DIVISIONS.forEach(d => o[d] = []);
+            o["Acara Seremoni"] = [
+                { name: "Finalisasi Master Rundown H-14", target: "100%", real: "96%", status: "GREEN" },
+                { name: "Konfirmasi Kehadiran VIP & Pengisi Acara", target: "100% RSVP", real: "80%", status: "GREEN" },
+                { name: "Ketepatan Durasi Gladi Bersih", target: "< 10m overrun", real: "On Track", status: "GREEN" }
+            ];
+            o["Acara Fun Run"] = [
+                { name: "Akurasi Jarak Rute Lari (Jones Counter)", target: "100% Presisi", real: "100%", status: "GREEN" },
+                { name: "Rekrutmen & Ploting Personel Marshal", target: "40 Personel", real: "25 Personel", status: "AMBER" },
+                { name: "MOU Rumah Sakit & Pasokan Water Station", target: "100% Siap", real: "90%", status: "GREEN" }
+            ];
+            o["Marketing"] = [
+                { name: "Persentase Kuota Tiket Terjual (Weekly Target)", target: "2.500 Tiket", real: "1.850 Tiket", status: "AMBER" },
+                { name: "Return on Ad Spend (ROAS Meta Ads)", target: "> 3.5x", real: "3.8x", status: "GREEN" },
+                { name: "Response Time CS / Ticket Helpdesk", target: "< 30 Menit", real: "18 Menit", status: "GREEN" }
+            ];
+            return o;
+        }
+        let kpiData = (function() {
+            let data = defaultKpi();
+            try {
+                const saved = localStorage.getItem(KPI_KEY);
+                if (saved) {
+                    const p = JSON.parse(saved);
+                    if (p && typeof p === 'object') DIVISIONS.forEach(d => { if (Array.isArray(p[d])) data[d] = p[d]; });
+                }
+            } catch (e) {}
+            return data;
+        })();
+        function saveKpi() { try { localStorage.setItem(KPI_KEY, JSON.stringify(kpiData)); } catch (e) {} }
+
+        // INITIALIZATION
+        window.onload = function() {
+            lucide.createIcons();
+            populateSelects();
+            colorRagSelect();
+            renderTable();
+            renderDashboard();
+            renderKPI();
+        };
+
+        // TAB SWITCHING LOGIC
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-brand-500', 'text-brand-400');
+                btn.classList.add('border-transparent', 'text-slate-400');
+            });
+
+            document.getElementById(`sec-${tabId}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`tab-${tabId}`);
+            activeBtn.classList.remove('border-transparent', 'text-slate-400');
+            activeBtn.classList.add('border-brand-500', 'text-brand-400');
+        }
+
+        // RENDER TABLE FUNCTION
+        function renderTable() {
+            const search = document.getElementById('filter-search').value.toLowerCase();
+            const divisi = document.getElementById('filter-divisi').value;
+            const week = document.getElementById('filter-week').value;
+            const rag = document.getElementById('filter-rag').value;
+
+            const tbody = document.getElementById('pppTableBody');
+            tbody.innerHTML = '';
+
+            const filteredData = pppData.filter(item => {
+                const matchSearch = item.divisi.toLowerCase().includes(search) ||
+                                    item.pic.toLowerCase().includes(search) ||
+                                    item.progress.toLowerCase().includes(search);
+                const matchDivisi = divisi === 'ALL' || item.divisi === divisi;
+                const matchWeek = week === 'ALL' || item.week === week;
+                const matchRag = rag === 'ALL' || item.rag === rag;
+
+                return matchSearch && matchDivisi && matchWeek && matchRag;
+            });
+
+            document.getElementById('record-count').innerText = filteredData.length;
+
+            if (filteredData.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="10" class="text-center p-8 text-slate-400 italic">
+                            Tidak ada data laporan PPP yang cocok dengan filter.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            filteredData.forEach((item, index) => {
+                let ragBadge = '';
+                if(item.rag === 'GREEN') {
+                    ragBadge = `<span class="bg-emerald-100 text-emerald-800 border border-emerald-300 font-semibold text-[11px] px-2.5 py-1 rounded-full inline-flex items-center gap-1"><span class="w-1.5 h-1.5 bg-emerald-600 rounded-full"></span> GREEN</span>`;
+                } else if(item.rag === 'AMBER') {
+                    ragBadge = `<span class="bg-amber-100 text-amber-800 border border-amber-300 font-semibold text-[11px] px-2.5 py-1 rounded-full inline-flex items-center gap-1"><span class="w-1.5 h-1.5 bg-amber-600 rounded-full"></span> AMBER</span>`;
+                } else {
+                    ragBadge = `<span class="bg-rose-100 text-rose-800 border border-rose-300 font-semibold text-[11px] px-2.5 py-1 rounded-full inline-flex items-center gap-1"><span class="w-1.5 h-1.5 bg-rose-600 rounded-full"></span> RED</span>`;
+                }
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition-colors";
+                tr.innerHTML = `
+                    <td data-label="No" class="p-3.5 text-center font-medium border-r border-slate-200 text-slate-500">${index + 1}</td>
+                    <td data-label="Tanggal" class="p-3.5 font-semibold text-slate-800 border-r border-slate-200 whitespace-nowrap">${dayLabel(item.week)}</td>
+                    <td data-label="Divisi" class="p-3.5 border-r border-slate-200 font-semibold text-slate-900">${item.divisi}</td>
+                    <td data-label="Koordinator / PIC" class="p-3.5 border-r border-slate-200 font-medium text-slate-700">${item.pic}</td>
+                    <td data-label="Status RAG" class="p-3.5 border-r border-slate-200 text-center">${ragBadge}</td>
+                    <td data-label="KPI %" class="p-3.5 border-r border-slate-200 text-center">
+                        <span class="font-bold ${item.kpi >= 90 ? 'text-emerald-600' : (item.kpi >= 75 ? 'text-amber-600' : 'text-rose-600')}">${item.kpi}%</span>
+                    </td>
+                    <td data-label="Progress (Selesai 100%)" class="p-3.5 border-r border-slate-200 text-[13px] whitespace-pre-line leading-relaxed text-slate-700">${escapeHtml(item.progress)}</td>
+                    <td data-label="Plans (Target Minggu Depan)" class="p-3.5 border-r border-slate-200 text-[13px] whitespace-pre-line leading-relaxed text-slate-700">${escapeHtml(item.plans)}</td>
+                    <td data-label="Problems & Escalation" class="p-3.5 border-r border-slate-200 text-[13px] whitespace-pre-line leading-relaxed text-slate-700 bg-amber-50/40">${escapeHtml(item.problems)}</td>
+                    <td data-label="Aksi" class="p-3.5 text-center">
+                        <div class="flex items-center justify-center space-x-1">
+                            <button onclick="previewFormattedText(${item.id})" title="Copy Teks WA" class="p-1.5 hover:bg-slate-200 text-slate-600 rounded-lg transition-colors">
+                                <i data-lucide="copy" class="w-4 h-4 text-brand-600"></i>
+                            </button>
+                            <button onclick="editReport(${item.id})" title="Edit Laporan" class="p-1.5 hover:bg-slate-200 text-slate-600 rounded-lg transition-colors">
+                                <i data-lucide="edit" class="w-4 h-4 text-blue-600"></i>
+                            </button>
+                            <button onclick="deleteReport(${item.id})" title="Hapus" class="p-1.5 hover:bg-slate-200 text-slate-600 rounded-lg transition-colors">
+                                <i data-lucide="trash-2" class="w-4 h-4 text-rose-600"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            lucide.createIcons();
+        }
+
+        // RENDER DASHBOARD EXECUTIVE SUMMARY
+        function renderDashboard() {
+            let green = 0, amber = 0, red = 0, totalKpi = 0;
+            pppData.forEach(d => {
+                if(d.rag === 'GREEN') green++;
+                else if(d.rag === 'AMBER') amber++;
+                else if(d.rag === 'RED') red++;
+                totalKpi += d.kpi;
+            });
+
+            document.getElementById('dash-green-count').innerText = `${green} Divisi`;
+            document.getElementById('dash-amber-count').innerText = `${amber} Divisi`;
+            document.getElementById('dash-red-count').innerText = `${red} Divisi`;
+            
+            const avgKpi = pppData.length > 0 ? (totalKpi / pppData.length).toFixed(1) : "0";
+            document.getElementById('dash-global-progress').innerText = `${avgKpi}%`;
+
+            // Division Cards Container
+            const cardsContainer = document.getElementById('divisionCardsContainer');
+            cardsContainer.innerHTML = '';
+
+            pppData.forEach(item => {
+                let borderClass = item.rag === 'GREEN' ? 'border-emerald-300 bg-emerald-50/20' : (item.rag === 'AMBER' ? 'border-amber-300 bg-amber-50/20' : 'border-rose-300 bg-rose-50/20');
+                let tagClass = item.rag === 'GREEN' ? 'bg-emerald-100 text-emerald-800' : (item.rag === 'AMBER' ? 'bg-amber-100 text-amber-800' : 'bg-rose-100 text-rose-800');
+
+                const divCard = document.createElement('div');
+                divCard.className = `p-4 rounded-xl border ${borderClass} space-y-3`;
+                divCard.innerHTML = `
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">${dayLabel(item.week)}</span>
+                            <h4 class="font-bold text-slate-900 text-sm">${item.divisi}</h4>
+                            <p class="text-xs text-slate-500">PIC: ${item.pic}</p>
+                        </div>
+                        <span class="text-xs font-bold px-2 py-0.5 rounded-full ${tagClass}">${item.rag}</span>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between text-xs font-semibold mb-1">
+                            <span>KPI Progress</span>
+                            <span class="${item.kpi >= 90 ? 'text-emerald-600' : (item.kpi >= 75 ? 'text-amber-600' : 'text-rose-600')}">${item.kpi}%</span>
+                        </div>
+                        <div class="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
+                            <div class="${item.rag === 'GREEN' ? 'bg-emerald-500' : (item.rag === 'AMBER' ? 'bg-amber-500' : 'bg-rose-500')} h-2 rounded-full transition-all duration-500" style="width: ${item.kpi}%"></div>
+                        </div>
+                    </div>
+
+                    <div class="text-xs text-slate-600 space-y-1">
+                        <p class="line-clamp-2"><strong>Progress:</strong> ${item.progress}</p>
+                    </div>
+                `;
+                cardsContainer.appendChild(divCard);
+            });
+
+            // Escalation Table
+            const escBody = document.getElementById('escalationTableBody');
+            escBody.innerHTML = '';
+
+            const amberRedData = pppData.filter(d => d.rag === 'AMBER' || d.rag === 'RED');
+            if(amberRedData.length === 0) {
+                escBody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-400 italic">Tidak ada isu kritis/eskalasi saat ini. Seluruh divisi GREEN.</td></tr>`;
+            } else {
+                amberRedData.forEach(item => {
+                    const tr = document.createElement('tr');
+                    tr.className = "hover:bg-slate-50";
+                    tr.innerHTML = `
+                        <td data-label="Divisi Pelapor" class="p-3 font-bold text-slate-800">${item.divisi}</td>
+                        <td data-label="Divisi Terkait" class="p-3 font-medium text-slate-600">Lintas Divisi / PM</td>
+                        <td data-label="Deskripsi Isu & Bottleneck" class="p-3 text-xs text-rose-700 whitespace-pre-line">${escapeHtml(item.problems)}</td>
+                        <td data-label="Dampak Operasional" class="p-3 text-xs text-slate-600">Berpotensi mengganggu timeline eksekusi minggu depan</td>
+                        <td data-label="Rekomendasi Solusi" class="p-3 text-xs font-medium text-emerald-700">Dibutuhkan arahan Project Manager pada Pleno Minggu Ini</td>
+                    `;
+                    escBody.appendChild(tr);
+                });
+            }
+        }
+
+        // RENDER KPI MATRIX (INPUTABLE, 22 DIVISI)
+        function ragClass(st) {
+            return st === 'GREEN' ? 'bg-emerald-100 text-emerald-800 border-emerald-300'
+                 : st === 'AMBER' ? 'bg-amber-100 text-amber-800 border-amber-300'
+                 : 'bg-rose-100 text-rose-800 border-rose-300';
+        }
+
+        function renderKPI() {
+            const container = document.getElementById('kpiCategoryList');
+            const filter = document.getElementById('kpi-filter-divisi').value;
+            container.innerHTML = '';
+            let total = 0;
+
+            DIVISIONS.forEach((div, di) => {
+                const items = kpiData[div] || [];
+                total += items.length;
+                if (filter !== 'ALL' && filter !== div) return;
+
+                const g = items.filter(k => k.status === 'GREEN').length;
+                const a = items.filter(k => k.status === 'AMBER').length;
+                const r = items.filter(k => k.status === 'RED').length;
+
+                const rowsHtml = items.length === 0
+                    ? `<tr><td colspan="6" class="p-4 text-center text-slate-400 italic">Belum ada indikator. Klik "Tambah Indikator" untuk mulai input.</td></tr>`
+                    : items.map((k, i) => `
+                    <tr class="hover:bg-slate-50">
+                        <td data-label="No" class="p-2 text-center border-r font-medium text-slate-400">${i + 1}</td>
+                        <td data-label="Indikator KPI" class="p-2 border-r"><input type="text" value="${escapeHtml(k.name)}" placeholder="Nama indikator" oninput="updateKpi(${di},${i},'name',this.value)" class="w-full p-1.5 text-xs sm:text-sm bg-white border border-slate-200 rounded focus:outline-none focus:ring-2 focus:ring-brand-500"></td>
+                        <td data-label="Target Ukur" class="p-2 border-r"><input type="text" value="${escapeHtml(k.target)}" placeholder="Target" oninput="updateKpi(${di},${i},'target',this.value)" class="w-full p-1.5 text-xs text-center bg-white border border-slate-200 rounded focus:outline-none focus:ring-2 focus:ring-brand-500"></td>
+                        <td data-label="Realisasi" class="p-2 border-r"><input type="text" value="${escapeHtml(k.real)}" placeholder="Realisasi" oninput="updateKpi(${di},${i},'real',this.value)" class="w-full p-1.5 text-xs text-center font-bold text-brand-700 bg-white border border-slate-200 rounded focus:outline-none focus:ring-2 focus:ring-brand-500"></td>
+                        <td data-label="Status" class="p-2 border-r text-center">
+                            <select onchange="updateKpi(${di},${i},'status',this.value); renderKPI();" class="text-[11px] font-bold px-2 py-1 rounded-full border ${ragClass(k.status)} focus:outline-none">
+                                <option value="GREEN" ${k.status === 'GREEN' ? 'selected' : ''}>GREEN</option>
+                                <option value="AMBER" ${k.status === 'AMBER' ? 'selected' : ''}>AMBER</option>
+                                <option value="RED" ${k.status === 'RED' ? 'selected' : ''}>RED</option>
+                            </select>
+                        </td>
+                        <td data-label="Aksi" class="p-2 text-center">
+                            <button onclick="deleteKpi(${di},${i})" title="Hapus indikator" class="p-1.5 hover:bg-slate-200 rounded-lg"><i data-lucide="trash-2" class="w-4 h-4 text-rose-600"></i></button>
+                        </td>
+                    </tr>`).join('');
+
+                const catBox = document.createElement('div');
+                catBox.className = "border border-slate-200 rounded-xl overflow-hidden";
+                catBox.innerHTML = `
+                    <div class="bg-slate-100 px-4 py-2.5 font-bold text-slate-800 border-b text-sm flex flex-wrap items-center justify-between gap-2">
+                        <span>${di + 1}. Divisi ${escapeHtml(div)}</span>
+                        <span class="text-[11px] font-semibold flex items-center gap-1.5">
+                            <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">${g} GREEN</span>
+                            <span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">${a} AMBER</span>
+                            <span class="px-2 py-0.5 rounded-full bg-rose-100 text-rose-800">${r} RED</span>
+                        </span>
+                    </div>
+                    <div class="overflow-x-auto custom-scrollbar">
+                    <table class="w-full text-left text-xs sm:text-sm resp-table">
+                        <thead class="bg-slate-50 text-slate-500 uppercase text-[10px] font-semibold border-b">
+                            <tr>
+                                <th class="p-2.5 w-10 text-center border-r">No</th>
+                                <th class="p-2.5 min-w-[240px] border-r">Indikator Kinerja Utama (KPI)</th>
+                                <th class="p-2.5 w-36 border-r text-center">Target Ukur</th>
+                                <th class="p-2.5 w-36 border-r text-center">Realisasi</th>
+                                <th class="p-2.5 w-28 border-r text-center">Status</th>
+                                <th class="p-2.5 w-16 text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200">${rowsHtml}</tbody>
+                    </table>
+                    </div>
+                    <div class="px-4 py-2.5 border-t border-slate-200 bg-white">
+                        <button onclick="addKpi(${di})" class="inline-flex items-center gap-1.5 text-xs font-medium text-brand-700 hover:text-brand-600">
+                            <i data-lucide="plus-circle" class="w-4 h-4"></i> Tambah Indikator
+                        </button>
+                    </div>
+                `;
+                container.appendChild(catBox);
+            });
+
+            document.getElementById('kpi-total').innerText = total;
+            lucide.createIcons();
+        }
+
+        function updateKpi(di, i, field, value) {
+            kpiData[DIVISIONS[di]][i][field] = value;
+            saveKpi();
+        }
+
+        function addKpi(di) {
+            kpiData[DIVISIONS[di]].push({ name: "", target: "", real: "", status: "GREEN" });
+            saveKpi();
+            renderKPI();
+        }
+
+        function deleteKpi(di, i) {
+            if (confirm('Hapus indikator KPI ini?')) {
+                kpiData[DIVISIONS[di]].splice(i, 1);
+                saveKpi();
+                renderKPI();
+            }
+        }
+
+        function resetKpi() {
+            if (confirm('Kosongkan semua indikator KPI dari seluruh divisi?')) {
+                DIVISIONS.forEach(d => kpiData[d] = []);
+                saveKpi();
+                renderKPI();
+            }
+        }
+
+        // POPULATE SELECT OPTIONS (DIVISI & MINGGU)
+        function populateSelects() {
+            const divOpts = DIVISIONS.map(d => `<option value="${d}">${d}</option>`).join('');
+            const weekOpts = WEEKS.map(w => `<option value="${w.key}">${w.label}</option>`).join('');
+            document.getElementById('filter-divisi').innerHTML = `<option value="ALL">Semua Divisi</option>` + divOpts;
+            document.getElementById('kpi-filter-divisi').innerHTML = `<option value="ALL">Semua 22 Divisi</option>` + divOpts;
+            document.getElementById('inp-divisi').innerHTML = divOpts;
+            document.getElementById('filter-week').innerHTML = `<option value="ALL">Semua Hari</option>` + weekOpts;
+            document.getElementById('inp-week').innerHTML = weekOpts;
+            document.getElementById('filter-week').value = 'ALL';
+            document.getElementById('inp-week').value = defaultDay();
+        }
+
+        // WARNA OPSI STATUS RAG PADA FORM
+        const RAG_COLORS = {
+            GREEN: { bg: '#dcfce7', fg: '#166534', border: '#86efac' },
+            AMBER: { bg: '#fef3c7', fg: '#92400e', border: '#fcd34d' },
+            RED:   { bg: '#ffe4e6', fg: '#9f1239', border: '#fda4af' }
+        };
+        function colorRagSelect() {
+            const el = document.getElementById('inp-rag');
+            const c = RAG_COLORS[el.value] || RAG_COLORS.GREEN;
+            el.style.backgroundColor = c.bg;
+            el.style.color = c.fg;
+            el.style.borderColor = c.border;
+            el.style.fontWeight = '600';
+        }
+
+        // MODAL ADD/EDIT REPORT FUNCTIONS
+        function openNewReportModal() {
+            document.getElementById('edit-id').value = '';
+            document.getElementById('formReport').reset();
+            document.getElementById('inp-week').value = defaultDay();
+            colorRagSelect();
+            document.getElementById('modalReportTitle').innerText = 'Input Laporan PPP Mingguan';
+            document.getElementById('modalReport').classList.remove('hidden');
+        }
+
+        function closeReportModal() {
+            document.getElementById('modalReport').classList.add('hidden');
+        }
+
+        function editReport(id) {
+            const item = pppData.find(d => d.id === id);
+            if(!item) return;
+
+            document.getElementById('edit-id').value = item.id;
+            document.getElementById('inp-week').value = item.week;
+            document.getElementById('inp-divisi').value = item.divisi;
+            document.getElementById('inp-pic').value = item.pic;
+            document.getElementById('inp-rag').value = item.rag;
+            colorRagSelect();
+            document.getElementById('inp-kpi').value = item.kpi;
+            document.getElementById('inp-progress').value = item.progress;
+            document.getElementById('inp-plans').value = item.plans;
+            document.getElementById('inp-problems').value = item.problems;
+
+            document.getElementById('modalReportTitle').innerText = 'Edit Laporan PPP Mingguan';
+            document.getElementById('modalReport').classList.remove('hidden');
+        }
+
+        function saveReport(e) {
+            e.preventDefault();
+            const editId = document.getElementById('edit-id').value;
+
+            const newItem = {
+                id: editId ? parseInt(editId) : Date.now(),
+                week: document.getElementById('inp-week').value,
+                divisi: document.getElementById('inp-divisi').value,
+                pic: document.getElementById('inp-pic').value,
+                rag: document.getElementById('inp-rag').value,
+                kpi: parseInt(document.getElementById('inp-kpi').value) || 0,
+                progress: document.getElementById('inp-progress').value,
+                plans: document.getElementById('inp-plans').value,
+                problems: document.getElementById('inp-problems').value
+            };
+
+            if(editId) {
+                const idx = pppData.findIndex(d => d.id === parseInt(editId));
+                if(idx !== -1) pppData[idx] = newItem;
+            } else {
+                pppData.unshift(newItem);
+            }
+
+            closeReportModal();
+            renderTable();
+            renderDashboard();
+        }
+
+        function deleteReport(id) {
+            if(confirm('Apakah Anda yakin ingin menghapus catatan laporan PPP ini?')) {
+                pppData = pppData.filter(d => d.id !== id);
+                renderTable();
+                renderDashboard();
+            }
+        }
+
+        // PREVIEW FORMATTED TEXT (WA / PLENO)
+        function previewFormattedText(id) {
+            const item = pppData.find(d => d.id === id);
+            if(!item) return;
+
+            const formatted = `================================================
+LAPORAN PLENO DIVISI: ${item.divisi.toUpperCase()}
+Tanggal         : ${dayLabel(item.week)}
+Penanggung Jawab: ${item.pic}
+Status RAG      : ${item.rag === 'GREEN' ? '🟩 GREEN' : (item.rag === 'AMBER' ? '🟨 AMBER' : '🟥 RED')}
+Ketercapaian KPI: ${item.kpi}%
+================================================
+
+1. PROGRESS (Pekerjaan Selesai Minggu Ini)
+${item.progress}
+
+2. PLANS (Rencana Kerja Minggu Depan)
+${item.plans}
+
+3. PROBLEMS & ESCALATION (Kendala & Butuh Solusi Pleno)
+${item.problems}
+================================================`;
+
+            document.getElementById('formattedTextContent').value = formatted;
+            document.getElementById('modalExportText').classList.remove('hidden');
+        }
+
+        function closeExportTextModal() {
+            document.getElementById('modalExportText').classList.add('hidden');
+        }
+
+        function copyFormattedText() {
+            const textarea = document.getElementById('formattedTextContent');
+            textarea.select();
+            document.execCommand('copy');
+            alert('Teks laporan berhasil disalin ke clipboard!');
+        }
+
+        // EXPORT TO EXCEL (.XLSX)
+        function exportToExcel() {
+            const excelData = pppData.map((d, i) => ({
+                "No": i + 1,
+                "Tanggal": dayLabel(d.week),
+                "Divisi Utama": d.divisi,
+                "PIC / Koordinator": d.pic,
+                "Status RAG": d.rag,
+                "KPI %": d.kpi,
+                "Progress (Capaian Selesai)": d.progress,
+                "Plans (Rencana Depan)": d.plans,
+                "Problems & Escalation": d.problems
+            }));
+
+            const worksheet = XLSX.utils.json_to_sheet(excelData);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Laporan PPP Weekly");
+
+            XLSX.writeFile(workbook, "Laporan_PPP_ENFORUN2026.xlsx");
+        }
+
+        // UTILITY ESCAPE HTML
+        function escapeHtml(text) {
+            if(!text) return '';
+            return text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+    </script>
+</body>
+</html>
